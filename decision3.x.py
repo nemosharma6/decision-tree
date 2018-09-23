@@ -190,7 +190,7 @@ class DecisionTree:
         attribute = list(tree.keys())[0]
 
         for _ in range(tab):
-            print(" "),
+            print(" ", end="")
 
         left = tree[attribute][0]
 
@@ -203,7 +203,7 @@ class DecisionTree:
         right = tree[attribute][1]
 
         for _ in range(tab):
-            print(" "),
+            print(" ", end="")
 
         if not isinstance(right, dict):
             print(attribute + " = 1 : " + str(right))
