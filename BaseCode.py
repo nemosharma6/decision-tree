@@ -3,15 +3,6 @@ import pandas as pd
 import math
 
 
-# def check_purity(data):
-#     class_column = data[:, -1]
-#     unique_classes = np.unique(class_column)
-#     if len(unique_classes) == 1:
-#         return True
-#     else:
-#         return False
-
-
 def check_purity(data):
     class_column = data[:, -1]
     count_of_0 = 0
@@ -43,7 +34,7 @@ def classify_data(data):
 def get_potential_splits(data):
     potential_splits = {}
     _, n_columns = data.shape
-    for column_index in range(n_columns - 1):  # excluding the last column which is the label
+    for column_index in range(n_columns - 1):
         potential_splits[column_index] = [0, 1]
 
     return potential_splits
@@ -114,7 +105,7 @@ def determine_best_split(data, potential_splits):
 
 
 def decision_tree_algorithm(df, counter=0, min_samples=0, max_depth=10):
-    # data preparations
+    
     if counter == 0:
         global COLUMN_HEADERS
         COLUMN_HEADERS = df.columns
@@ -122,33 +113,23 @@ def decision_tree_algorithm(df, counter=0, min_samples=0, max_depth=10):
     else:
         data = df
 
-        # base cases
     if (check_purity(data)) or (len(data) < min_samples) or (counter == max_depth):
         classification = classify_data(data)
         return classification
 
-    # recursive part
     else:
         counter += 1
-
-        # helper functions
         potential_splits = get_potential_splits(data)
         split_column = determine_best_split(data, potential_splits)
         data_left, data_right = split_data(data, split_column)
-        # print(counter, split_column, data_left, data_right)
-
-        # instantiate sub-tree
+        
         feature_name = COLUMN_HEADERS[split_column]
         question = "{}".format(feature_name)
         sub_tree = {question: []}
 
-        # find answers (recursion)
         no_answer = decision_tree_algorithm(data_left, counter, min_samples, max_depth)
         yes_answer = decision_tree_algorithm(data_right, counter, min_samples, max_depth)
 
-        # If the answers are the same, then there is no point in asking the qestion.
-        # This could happen when the data is classified even though it is not pure
-        # yet (min_samples or max_depth base case).
         if yes_answer == no_answer:
             sub_tree = yes_answer
         else:
